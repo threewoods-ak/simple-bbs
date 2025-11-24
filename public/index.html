@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple BBS</title>
+    <meta name="description" content="シンプルで匿名性の高い掲示板システムです。">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simple BBS</h1>
+            <p>匿名、シンプル、安全。</p>
+        </header>
+
+        <main>
+            <section class="post-form-container">
+                <div class="input-group">
+                    <input type="text" id="messageInput" placeholder="今どうしてる？ (最大100文字)" maxlength="100">
+                    <button id="postButton">投稿</button>
+                </div>
+                <div class="form-info">
+                    <p>投稿は1分に1回までです</p>
+                    <p>100件を超えたコメントは古いものから削除されます</p>
+                </div>
+                <div id="statusMessage"></div>
+            </section>
+
+            <section class="comments-list" id="commentsList">
+                <!-- Comments will be injected here -->
+                <div class="loading">コメントを読み込み中...</div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Simple BBS. Powered by Cloudflare Workers & D1.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

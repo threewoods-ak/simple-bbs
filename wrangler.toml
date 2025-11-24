@@ -1,0 +1,30 @@
+name = "simple-bbs"
+compatibility_date = "2024-04-01"
+main = "src/index.js"
+assets = { directory = "./public", binding = "ASSETS" }
+# pages_build_output_dir = "./public"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "simple-bbs-db"
+database_id = "xxxx-xxxx-xxxx-xxxx" # Placeholder, user needs to create this or we use local
+
+[[kv_namespaces]]
+binding = "KV"
+id = "xxxx-xxxx-xxxx-xxxx" # Placeholder
+preview_id = "xxxx-xxxx-xxxx-xxxx" # Placeholder
+
+[vars]
+# GEMINI_API_KEY will be set via secrets or .dev.vars
+# GEMINI_MODEL = "gemini-pro" # Optional, defaults to gemini-pro if not set
+
+[triggers]
+crons = ["0 0 * * 0"] # Every Sunday at midnight
+
+[[rules]]
+type = "Text"
+globs = ["**/*.md"]
+fallthrough = true
