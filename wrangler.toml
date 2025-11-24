@@ -1,4 +1,4 @@
-name = "simple-bbs"
+name = "simple-bbs-antigravity"
 compatibility_date = "2024-04-01"
 main = "src/index.js"
 assets = { directory = "./public", binding = "ASSETS" }
@@ -9,20 +9,20 @@ enabled = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "simple-bbs-db"
-database_id = "xxxx-xxxx-xxxx-xxxx" # Placeholder, user needs to create this or we use local
+database_name = "simple-bbs-antigravity-db"
+database_id = "5a843e88-9290-4ddf-bbce-c045cc26eee9"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "xxxx-xxxx-xxxx-xxxx" # Placeholder
-preview_id = "xxxx-xxxx-xxxx-xxxx" # Placeholder
+id = "4a8ac8618b8c430a9e4a04afcee42401"
+preview_id = "4a8ac8618b8c430a9e4a04afcee42401"
 
 [vars]
 # GEMINI_API_KEY will be set via secrets or .dev.vars
 # GEMINI_MODEL = "gemini-pro" # Optional, defaults to gemini-pro if not set
 
 [triggers]
-crons = ["0 0 * * 0"] # Every Sunday at midnight
+crons = ["0 0 * * SUN"] # Every Sunday at midnight
 
 [[rules]]
 type = "Text"
