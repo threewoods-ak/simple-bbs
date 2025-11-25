@@ -10,12 +10,12 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "simple-bbs-antigravity-db"
-database_id = "5a843e88-9290-4ddf-bbce-c045cc26eee9"
+database_id = "ccb68d03-afba-41a4-8347-00cf9d58fbd5"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "4a8ac8618b8c430a9e4a04afcee42401"
-preview_id = "4a8ac8618b8c430a9e4a04afcee42401"
+id = "07aa01f6cc1b40a6b06022ac3f797df6"
+preview_id = "07aa01f6cc1b40a6b06022ac3f797df6"
 
 [vars]
 # GEMINI_API_KEY will be set via secrets or .dev.vars
