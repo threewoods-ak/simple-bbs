@@ -1,0 +1,23 @@
+{
+  "name": "simple-bbs-copilot",
+  "version": "1.0.0",
+  "description": "Anonymous BBS using Cloudflare Workers + D1 + KV + Pages",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:production": "wrangler deploy --config wrangler.production.toml",
+    "pages:dev": "wrangler pages dev public",
+    "pages:deploy": "wrangler pages deploy public"
+  },
+  "keywords": ["cloudflare", "workers", "bbs"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "wrangler": "^3.22.1"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.1.3"
+  }
+}

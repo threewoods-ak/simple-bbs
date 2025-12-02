@@ -1,0 +1,39 @@
+name = "simple-bbs-copilot"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "simple-bbs-copilot-db"
+database_id = "8ff4d2cd-9ceb-4d4f-b770-91aa5dcf8c9f"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "9c7a3f7e20df46f39d22aa6d8ef6d54d"
+preview_id = "9c7a3f7e20df46f39d22aa6d8ef6d54d"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "e06d01276cac4860a2e4652812e3fd02"
+preview_id = "e06d01276cac4860a2e4652812e3fd02"
+
+# Secrets (set via: wrangler secret put GEMINI_API_KEY)
+# GEMINI_API_KEY
+
+# Cron Triggers for weekly cleanup (every Sunday at 00:00 UTC)
+[triggers]
+crons = ["0 0 * * SUN"]
+
+[observability]
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+invocation_logs = true
+persist = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
