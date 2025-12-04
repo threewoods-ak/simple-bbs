@@ -136,7 +136,7 @@ function revealMessage(element) {
   console.log('element.textContent:', element.textContent);
   console.log('data-original:', element.getAttribute('data-original'));
   
-  if (element.textContent === '*****') {
+  if (element.textContent.trim() === '*****') {
     const originalMessage = element.getAttribute('data-original');
     console.log('originalMessage:', originalMessage);
     element.textContent = originalMessage || '不適切な表現が含まれている可能性があります';
