@@ -10,8 +10,9 @@ interface Env {
 interface Comment {
   id: string;
   message: string;
+  original_message?: string;
+  moderation_level: number;
   created_at: number;
-  is_hidden: boolean;
 }
 
 const CACHE_KEY = 'comment_cache';
@@ -60,7 +61,7 @@ async function handleGet(env: Env, corsHeaders: Record<string, string>): Promise
 
     // Fetch from D1 if cache miss
     const result = await env.DB.prepare(
-      'SELECT id, message, created_at FROM comments ORDER BY created_at DESC LIMIT ?'
+      'SELECT id, message, original_message, moderation_level, created_at FROM comments ORDER BY created_at DESC LIMIT ?'
     )
       .bind(MAX_COMMENTS)
       .all();
@@ -68,8 +69,9 @@ async function handleGet(env: Env, corsHeaders: Record<string, string>): Promise
     const comments: Comment[] = (result.results || []).map((row: any) => ({
       id: row.id,
       message: row.message,
+      original_message: row.original_message,
+      moderation_level: row.moderation_level,
       created_at: row.created_at,
-      is_hidden: row.message.includes('*****'),
     }));
 
     const json = JSON.stringify(comments);
@@ -164,15 +166,16 @@ async function handlePost(
 
     // Apply level 2 moderation (hide with asterisks)
     const finalMessage = moderationLevel === 2 ? '*****' : sanitizedMessage;
+    const originalMessage = moderationLevel === 2 ? sanitizedMessage : null;
 
     // Insert comment into D1
     const id = crypto.randomUUID();
     const created_at = Date.now();
 
     await env.DB.prepare(
-      'INSERT INTO comments (id, message, created_at, ip_hash) VALUES (?, ?, ?, ?)'
+      'INSERT INTO comments (id, message, original_message, moderation_level, created_at, ip_hash) VALUES (?, ?, ?, ?, ?, ?)'
     )
-      .bind(id, finalMessage, created_at, ipHash)
+      .bind(id, finalMessage, originalMessage, moderationLevel, created_at, ipHash)
       .run();
 
     // Invalidate cache

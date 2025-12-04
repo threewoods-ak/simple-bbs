@@ -2,6 +2,8 @@
 CREATE TABLE IF NOT EXISTS comments (
   id TEXT PRIMARY KEY,
   message TEXT NOT NULL,
+  original_message TEXT,
+  moderation_level INTEGER NOT NULL,
   created_at INTEGER NOT NULL,
   ip_hash TEXT NOT NULL
 );

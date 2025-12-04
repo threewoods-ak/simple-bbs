@@ -103,9 +103,10 @@ function displayComments(comments) {
       const date = new Date(comment.created_at);
       const formattedDate = formatDate(date);
 
-      const messageClass = comment.is_hidden ? 'hidden-message' : '';
-      const onclick = comment.is_hidden
-        ? `onclick="revealMessage(this, '${escapeHtml(comment.id)}')"`
+      const isHidden = comment.moderation_level === 2;
+      const messageClass = isHidden ? 'hidden-message' : '';
+      const onclick = isHidden
+        ? `onclick="revealMessage(this, '${escapeHtml(comment.original_message || '')}')"`
         : '';
 
       return `
@@ -122,9 +123,9 @@ function displayComments(comments) {
     .join('');
 }
 
-function revealMessage(element) {
+function revealMessage(element, originalMessage) {
   if (element.textContent === '*****') {
-    element.textContent = '不適切な表現が含まれている可能性があります';
+    element.textContent = originalMessage || '不適切な表現が含まれている可能性があります';
     element.classList.remove('hidden-message');
     element.style.cursor = 'default';
     element.onclick = null;
