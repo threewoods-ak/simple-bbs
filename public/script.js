@@ -109,7 +109,7 @@ function displayComments(comments) {
 
       return `
       <div class="comment" data-id="${escapeHtml(comment.id)}">
-        <div class="comment-message ${messageClass}" ${dataOriginal} ${isHidden ? 'onclick="revealMessage(this)"' : ''}>
+        <div class="comment-message ${messageClass}" ${dataOriginal}>
           ${escapeHtml(comment.message)}
         </div>
         <div class="comment-meta">
@@ -119,6 +119,13 @@ function displayComments(comments) {
     `;
     })
     .join('');
+
+  // Add click event listeners for hidden messages
+  commentsList.querySelectorAll('.comment-message.hidden-message').forEach((element) => {
+    element.addEventListener('click', function() {
+      revealMessage(this);
+    });
+  });
 }
 
 function revealMessage(element) {
