@@ -105,13 +105,11 @@ function displayComments(comments) {
 
       const isHidden = comment.moderation_level === 2;
       const messageClass = isHidden ? 'hidden-message' : '';
-      const onclick = isHidden
-        ? `onclick="revealMessage(this, '${escapeHtml(comment.original_message || '')}')"`
-        : '';
+      const dataOriginal = isHidden ? `data-original="${escapeHtml(comment.original_message || '')}"` : '';
 
       return `
       <div class="comment" data-id="${escapeHtml(comment.id)}">
-        <div class="comment-message ${messageClass}" ${onclick}>
+        <div class="comment-message ${messageClass}" ${dataOriginal} ${isHidden ? 'onclick="revealMessage(this)"' : ''}>
           ${escapeHtml(comment.message)}
         </div>
         <div class="comment-meta">
@@ -123,8 +121,9 @@ function displayComments(comments) {
     .join('');
 }
 
-function revealMessage(element, originalMessage) {
+function revealMessage(element) {
   if (element.textContent === '*****') {
+    const originalMessage = element.getAttribute('data-original');
     element.textContent = originalMessage || '不適切な表現が含まれている可能性があります';
     element.classList.remove('hidden-message');
     element.style.cursor = 'default';
