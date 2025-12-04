@@ -1,4 +1,4 @@
-const API_URL = '/api/comments';
+const API_URL = 'https://simple-bbs-copilot.zhongweixiongtai592.workers.dev/api/comments';
 
 const commentForm = document.getElementById('commentForm');
 const messageInput = document.getElementById('messageInput');
@@ -11,7 +11,7 @@ const charCount = document.getElementById('charCount');
 messageInput.addEventListener('input', () => {
   const count = messageInput.value.length;
   charCount.textContent = count;
-  
+
   if (count > 100) {
     charCount.style.color = '#d32f2f';
   } else {
@@ -25,22 +25,22 @@ loadComments();
 // Form submission
 commentForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const message = messageInput.value.trim();
-  
+
   if (!message) {
     showMessage('コメントを入力してください', 'error');
     return;
   }
-  
+
   if (message.length > 100) {
     showMessage('コメントは100文字以内で入力してください', 'error');
     return;
   }
-  
+
   submitBtn.disabled = true;
   submitBtn.textContent = '投稿中...';
-  
+
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -49,14 +49,14 @@ commentForm.addEventListener('submit', async (e) => {
       },
       body: JSON.stringify({ message }),
     });
-    
+
     const data = await response.json();
-    
+
     if (response.ok) {
       showMessage('コメントを投稿しました！', 'success');
       messageInput.value = '';
       charCount.textContent = '0';
-      
+
       // Reload comments after a short delay
       setTimeout(() => {
         loadComments();
@@ -76,34 +76,39 @@ commentForm.addEventListener('submit', async (e) => {
 async function loadComments() {
   try {
     const response = await fetch(API_URL);
-    
+
     if (!response.ok) {
       throw new Error('Failed to load comments');
     }
-    
+
     const comments = await response.json();
-    
+
     displayComments(comments);
   } catch (error) {
     console.error('Error loading comments:', error);
-    commentsList.innerHTML = '<div class="empty-state"><p>コメントの読み込みに失敗しました</p></div>';
+    commentsList.innerHTML =
+      '<div class="empty-state"><p>コメントの読み込みに失敗しました</p></div>';
   }
 }
 
 function displayComments(comments) {
   if (!comments || comments.length === 0) {
-    commentsList.innerHTML = '<div class="empty-state"><p>まだコメントがありません</p><p>最初のコメントを投稿してみましょう！</p></div>';
+    commentsList.innerHTML =
+      '<div class="empty-state"><p>まだコメントがありません</p><p>最初のコメントを投稿してみましょう！</p></div>';
     return;
   }
-  
-  commentsList.innerHTML = comments.map(comment => {
-    const date = new Date(comment.created_at);
-    const formattedDate = formatDate(date);
-    
-    const messageClass = comment.is_hidden ? 'hidden-message' : '';
-    const onclick = comment.is_hidden ? `onclick="revealMessage(this, '${escapeHtml(comment.id)}')"` : '';
-    
-    return `
+
+  commentsList.innerHTML = comments
+    .map((comment) => {
+      const date = new Date(comment.created_at);
+      const formattedDate = formatDate(date);
+
+      const messageClass = comment.is_hidden ? 'hidden-message' : '';
+      const onclick = comment.is_hidden
+        ? `onclick="revealMessage(this, '${escapeHtml(comment.id)}')"`
+        : '';
+
+      return `
       <div class="comment" data-id="${escapeHtml(comment.id)}">
         <div class="comment-message ${messageClass}" ${onclick}>
           ${escapeHtml(comment.message)}
@@ -113,7 +118,8 @@ function displayComments(comments) {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
 function revealMessage(element) {
@@ -129,7 +135,7 @@ function showMessage(message, type) {
   messageArea.textContent = message;
   messageArea.className = `message-area ${type}`;
   messageArea.style.display = 'block';
-  
+
   setTimeout(() => {
     messageArea.style.display = 'none';
   }, 5000);
@@ -138,12 +144,12 @@ function showMessage(message, type) {
 function formatDate(date) {
   const now = new Date();
   const diff = now - date;
-  
+
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
-  
+
   if (days > 0) {
     return `${days}日前`;
   } else if (hours > 0) {

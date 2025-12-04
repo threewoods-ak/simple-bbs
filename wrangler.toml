@@ -6,18 +6,18 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "simple-bbs-copilot-db"
-database_id = "8ff4d2cd-9ceb-4d4f-b770-91aa5dcf8c9f"
+database_id = "e1dbe905-5561-4bbc-9a0a-b0337f2c0bd5"
 
 # KV Namespaces
 [[kv_namespaces]]
 binding = "CACHE_KV"
-id = "9c7a3f7e20df46f39d22aa6d8ef6d54d"
-preview_id = "9c7a3f7e20df46f39d22aa6d8ef6d54d"
+id = "f9779ca797c940049be7c39c55de5bab"
+preview_id = "f9779ca797c940049be7c39c55de5bab"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "e06d01276cac4860a2e4652812e3fd02"
-preview_id = "e06d01276cac4860a2e4652812e3fd02"
+id = "07cb367ea9fe483b9f505b6e602c13fe"
+preview_id = "07cb367ea9fe483b9f505b6e602c13fe"
 
 # Secrets (set via: wrangler secret put GEMINI_API_KEY)
 # GEMINI_API_KEY

@@ -60,7 +60,7 @@ async function handleGet(env: Env, corsHeaders: Record<string, string>): Promise
 
     // Fetch from D1 if cache miss
     const result = await env.DB.prepare(
-      'SELECT id, message, created_at, ip_hash FROM comments ORDER BY created_at DESC LIMIT ?'
+      'SELECT id, message, created_at FROM comments ORDER BY created_at DESC LIMIT ?'
     )
       .bind(MAX_COMMENTS)
       .all();
@@ -73,7 +73,7 @@ async function handleGet(env: Env, corsHeaders: Record<string, string>): Promise
     }));
 
     const json = JSON.stringify(comments);
-    
+
     // Save to KV cache
     await env.CACHE_KV.put(CACHE_KEY, json, { expirationTtl: 300 });
 
@@ -88,9 +88,13 @@ async function handleGet(env: Env, corsHeaders: Record<string, string>): Promise
   }
 }
 
-async function handlePost(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+async function handlePost(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>
+): Promise<Response> {
   try {
-    const body = await request.json() as { message: string };
+    const body = (await request.json()) as { message: string };
     const message = body.message?.trim();
 
     if (!message) {
@@ -101,10 +105,13 @@ async function handlePost(request: Request, env: Env, corsHeaders: Record<string
     }
 
     if (message.length > MAX_MESSAGE_LENGTH) {
-      return new Response(JSON.stringify({ error: `Message must be ${MAX_MESSAGE_LENGTH} characters or less` }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ error: `Message must be ${MAX_MESSAGE_LENGTH} characters or less` }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Get IP address
@@ -114,7 +121,7 @@ async function handlePost(request: Request, env: Env, corsHeaders: Record<string
     // Check rate limit
     const rateLimitKey = `ip_limit:${ipHash}`;
     const lastPost = await env.RATE_LIMIT_KV.get(rateLimitKey);
-    
+
     if (lastPost) {
       return new Response(JSON.stringify({ error: 'Please wait before posting again' }), {
         status: 429,
@@ -128,13 +135,31 @@ async function handlePost(request: Request, env: Env, corsHeaders: Record<string
     // Moderate content with Gemini
     const moderationLevel = await moderateContent(sanitizedMessage, env.GEMINI_API_KEY);
 
+    // Check if moderation failed
+    if (moderationLevel === null) {
+      return new Response(
+        JSON.stringify({
+          error:
+            'コンテンツのモデレーションに失敗しました。しばらくしてからもう一度お試しください。',
+        }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
     if (moderationLevel === 3) {
-      return new Response(JSON.stringify({ 
-        error: 'Your message contains inappropriate content or personal information and cannot be posted' 
-      }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          error:
+            'Your message contains inappropriate content or personal information and cannot be posted',
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Apply level 2 moderation (hide with asterisks)
@@ -171,12 +196,12 @@ async function handlePost(request: Request, env: Env, corsHeaders: Record<string
   }
 }
 
-async function moderateContent(text: string, apiKey: string): Promise<number> {
+async function moderateContent(text: string, apiKey: string): Promise<number | null> {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const rulesTemplate = `# Gemini 回答生成ルール
+    const prompt = `# Gemini 回答生成ルール
 
 あなたは掲示板サイトの管理人です。テキストの内容をチェックして書き込みの可否を判断してください。
 **最重要ルール：生成するテキストは、絶対に1,2,3のいずれかの数値のみで回答してください。**
@@ -209,10 +234,9 @@ async function moderateContent(text: string, apiKey: string): Promise<number> {
 以下にあなたがチェックすべきテキストが与えられます。
 
 --- チェック対象テキストここから ---
-{TEXT_TO_CHECK}
+${text}
 --- チェック対象テキストここまで ---`;
 
-    const prompt = rulesTemplate.replace('{TEXT_TO_CHECK}', text);
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text().trim();
@@ -222,12 +246,13 @@ async function moderateContent(text: string, apiKey: string): Promise<number> {
       return level;
     }
 
-    // Default to safe if unexpected response
-    return 1;
+    // Unexpected response format
+    console.error('Unexpected moderation response:', responseText);
+    return null;
   } catch (error) {
     console.error('Moderation error:', error);
-    // Default to safe on error
-    return 1;
+    // Return null to indicate failure
+    return null;
   }
 }
 
@@ -236,7 +261,7 @@ async function hashIP(ip: string): Promise<string> {
   const data = encoder.encode(ip);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 function escapeHtml(text: string): string {
