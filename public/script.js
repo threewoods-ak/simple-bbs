@@ -121,7 +121,10 @@ function displayComments(comments) {
     .join('');
 
   // Add click event listeners for hidden messages
-  commentsList.querySelectorAll('.comment-message.hidden-message').forEach((element) => {
+  const hiddenMessages = commentsList.querySelectorAll('.comment-message.hidden-message');
+  console.log('Found hidden messages:', hiddenMessages.length);
+  hiddenMessages.forEach((element) => {
+    console.log('Adding listener to:', element.textContent, 'data-original:', element.getAttribute('data-original'));
     element.addEventListener('click', function() {
       revealMessage(this);
     });
@@ -129,12 +132,16 @@ function displayComments(comments) {
 }
 
 function revealMessage(element) {
+  console.log('revealMessage called');
+  console.log('element.textContent:', element.textContent);
+  console.log('data-original:', element.getAttribute('data-original'));
+  
   if (element.textContent === '*****') {
     const originalMessage = element.getAttribute('data-original');
+    console.log('originalMessage:', originalMessage);
     element.textContent = originalMessage || '不適切な表現が含まれている可能性があります';
     element.classList.remove('hidden-message');
     element.style.cursor = 'default';
-    element.onclick = null;
   }
 }
 
