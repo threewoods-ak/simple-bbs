@@ -6,16 +6,16 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "simple-bbs-db"
-database_id = "your-database-id"
+database_id = "0be0ec8e-caeb-461c-96f7-048487d35f0f"
 
 # KV Namespaces
 [[kv_namespaces]]
 binding = "CACHE_KV"
-id = "your-cache-kv-id"
+id = "c84f0ab1f73a41fa869aed3b0e1fc2ca"
 
 [[kv_namespaces]]
 binding = "LIMIT_KV"
-id = "your-limit-kv-id"
+id = "f108da9daca34c1ca3467eb0d978e433"
 
 # Cron Triggers
 [triggers]
