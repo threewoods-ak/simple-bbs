@@ -72,6 +72,11 @@ function renderComments(comments) {
         const date = new Date(comment.created_at);
         const dateStr = formatDate(date);
         const isCensored = comment.message === '*****';
+        
+        // Store original message if it exists
+        if (isCensored && comment.original_message) {
+            censoredMessages[comment.id] = comment.original_message;
+        }
 
         return `
             <div class="comment">

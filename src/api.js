@@ -20,7 +20,7 @@ export async function getComments(env, corsHeaders) {
 
     // If not in cache, get from D1
     const result = await env.DB.prepare(
-      'SELECT id, message, created_at FROM comments ORDER BY created_at DESC LIMIT 100'
+      'SELECT id, message, original_message, created_at FROM comments ORDER BY created_at DESC LIMIT 100'
     ).all();
 
     const comments = result.results || [];
@@ -128,14 +128,16 @@ export async function postComment(request, env, corsHeaders) {
 
     // Determine final message based on moderation level
     let finalMessage = message;
+    let originalMessage = null;
     if (moderationResult.level === 2) {
       finalMessage = '*****';
+      originalMessage = message;
     }
 
     // Insert into D1
     await env.DB.prepare(
-      'INSERT INTO comments (id, message, created_at, ip_hash) VALUES (?, ?, ?, ?)'
-    ).bind(id, finalMessage, createdAt, ipHash).run();
+      'INSERT INTO comments (id, message, original_message, created_at, ip_hash) VALUES (?, ?, ?, ?, ?)'
+    ).bind(id, finalMessage, originalMessage, createdAt, ipHash).run();
 
     // Set rate limit
     await env.LIMIT_KV.put(limitKey, Date.now().toString(), {
