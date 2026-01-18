@@ -48,6 +48,8 @@ npx wrangler kv:namespace create "LIMIT_KV"
 
 ### 3. 環境変数の設定
 
+#### 開発環境
+
 `.dev.vars`ファイルを作成してGemini APIキーとモデル名を設定：
 
 ```
@@ -55,13 +57,17 @@ GEMINI_API_KEY=your-gemini-api-key-here
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-本番環境では以下のコマンドで設定：
+#### 本番環境
+
+**GEMINI_API_KEY（Secret）**: 以下のコマンドで暗号化されたSecretとして設定：
 
 ```bash
 npx wrangler secret put GEMINI_API_KEY
 ```
 
-**注意**: `GEMINI_MODEL`は`wrangler.toml`の`[vars]`セクションで設定されます。別のモデルを使用する場合は`wrangler.toml`を編集してください。
+**GEMINI_MODEL（Plain text）**: `wrangler.toml`の`[vars]`セクションで設定されます。別のモデルを使用する場合は`wrangler.toml`を編集してください。
+
+> **重要**: APIキーなどの機密情報は必ずSecretとして設定し、`wrangler.toml`の`[vars]`には含めないでください。
 
 ### 4. 開発サーバーの起動
 
