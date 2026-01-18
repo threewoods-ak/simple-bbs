@@ -50,11 +50,10 @@ npx wrangler kv:namespace create "LIMIT_KV"
 
 #### 開発環境
 
-`.dev.vars`ファイルを作成してGemini APIキーとモデル名を設定：
+`.dev.vars`ファイルを作成してGemini APIキーを設定：
 
 ```
 GEMINI_API_KEY=your-gemini-api-key-here
-GEMINI_MODEL=gemini-2.5-flash
 ```
 
 #### 本番環境
@@ -65,7 +64,12 @@ GEMINI_MODEL=gemini-2.5-flash
 npx wrangler secret put GEMINI_API_KEY
 ```
 
-**GEMINI_MODEL（Plain text）**: `wrangler.toml`の`[vars]`セクションで設定されます。別のモデルを使用する場合は`wrangler.toml`を編集してください。
+**GEMINI_MODEL（Plain text）**: `wrangler.toml`の`[vars]`セクションで設定されています。別のモデルを使用する場合は`wrangler.toml`を編集してください。
+
+```toml
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+```
 
 > **重要**: APIキーなどの機密情報は必ずSecretとして設定し、`wrangler.toml`の`[vars]`には含めないでください。
 
