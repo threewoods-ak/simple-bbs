@@ -17,6 +17,7 @@ export async function handleCron(event, env, ctx) {
 
     console.log('Cron job completed successfully');
   } catch (error) {
-    console.error('Cron job error:', error);
+    // Log error message only
+    console.error('Cron job error:', error.message);
   }
 }

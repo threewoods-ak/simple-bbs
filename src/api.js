@@ -36,7 +36,8 @@ export async function getComments(env, corsHeaders) {
       },
     });
   } catch (error) {
-    console.error('Error getting comments:', error);
+    // Log error details server-side only
+    console.error('Error getting comments:', error.message);
     return new Response(JSON.stringify({ error: 'Failed to get comments' }), {
       status: 500,
       headers: {
@@ -95,9 +96,10 @@ export async function postComment(request, env, corsHeaders) {
     try {
       moderationResult = await moderateContent(message, env);
     } catch (moderationError) {
-      console.error('Moderation failed:', moderationError);
+      // Log error details server-side only
+      console.error('Moderation failed:', moderationError.message);
       return new Response(JSON.stringify({ 
-        error: 'AI moderation service is currently unavailable. Please try again later.',
+        error: 'Content moderation service is currently unavailable',
       }), {
         status: 503,
         headers: {
@@ -156,7 +158,8 @@ export async function postComment(request, env, corsHeaders) {
       },
     });
   } catch (error) {
-    console.error('Error posting comment:', error);
+    // Log error details server-side only
+    console.error('Error posting comment:', error.message);
     return new Response(JSON.stringify({ error: 'Failed to post comment' }), {
       status: 500,
       headers: {

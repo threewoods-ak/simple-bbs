@@ -70,9 +70,9 @@ export async function moderateContent(message, env) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Gemini API error:', errorText);
-      // If model not found or API error, reject the post
-      throw new Error(`AI moderation failed: ${errorText}`);
+      // Log error details server-side only (don't expose API details)
+      console.error('Gemini API error:', response.status, errorText.substring(0, 100));
+      throw new Error('AI moderation service unavailable');
     }
 
     const data = await response.json();
@@ -85,11 +85,11 @@ export async function moderateContent(message, env) {
     }
 
     // If parsing fails, reject the post
-    console.error('Invalid moderation result:', result);
+    console.error('Invalid moderation result');
     throw new Error('AI moderation returned invalid result');
   } catch (error) {
-    console.error('Moderation error:', error);
-    // Reject post if moderation fails
+    // Log error message only, not full error object
+    console.error('Moderation error:', error.message);
     throw error;
   }
 }
