@@ -10,42 +10,37 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Simple BBS</h1>
-            <p class="subtitle">匿名掲示板</p>
-        </header>
-
         <main>
             <!-- Post form -->
             <section class="post-form">
-                <h2>投稿する</h2>
                 <form id="commentForm">
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="メッセージを入力してください（最大100文字）"
-                        maxlength="100"
-                        rows="4"
-                        required
-                    ></textarea>
-                    <div class="form-footer">
-                        <span id="charCount">0/100</span>
+                    <div class="form-row">
+                        <input 
+                            type="text"
+                            id="messageInput" 
+                            placeholder="メッセージを入力してください（最大100文字）"
+                            maxlength="100"
+                            required
+                        />
                         <button type="submit" id="submitBtn">投稿</button>
                     </div>
+                    <div class="char-count">
+                        <span id="charCount">0/100</span>
+                    </div>
                 </form>
+                <div class="info-text">
+                    <p>投稿は1分に1回までです</p>
+                    <p>100件を超えたコメントは古いものから削除されます</p>
+                </div>
                 <div id="message" class="message"></div>
             </section>
 
             <!-- Comments list -->
             <section class="comments-section">
-                <h2>コメント一覧</h2>
                 <div id="loading" class="loading">読み込み中...</div>
                 <div id="commentsList" class="comments-list"></div>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Simple BBS. Built with Cloudflare Workers.</p>
-        </footer>
     </div>
 
     <script src="app.js"></script>
