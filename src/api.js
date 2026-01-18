@@ -91,7 +91,21 @@ export async function postComment(request, env, corsHeaders) {
     }
 
     // Moderate content
-    const moderationResult = await moderateContent(message, env);
+    let moderationResult;
+    try {
+      moderationResult = await moderateContent(message, env);
+    } catch (moderationError) {
+      console.error('Moderation failed:', moderationError);
+      return new Response(JSON.stringify({ 
+        error: 'AI moderation service is currently unavailable. Please try again later.',
+      }), {
+        status: 503,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     
     if (moderationResult.level === 3) {
       return new Response(JSON.stringify({ 

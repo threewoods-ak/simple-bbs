@@ -42,7 +42,7 @@ export async function moderateContent(message, env) {
 
     // Call Gemini API
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -63,9 +63,10 @@ export async function moderateContent(message, env) {
     );
 
     if (!response.ok) {
-      console.error('Gemini API error:', await response.text());
-      // Default to level 1 if API fails
-      return { level: 1 };
+      const errorText = await response.text();
+      console.error('Gemini API error:', errorText);
+      // If model not found or API error, reject the post
+      throw new Error(`AI moderation failed: ${errorText}`);
     }
 
     const data = await response.json();
@@ -77,12 +78,12 @@ export async function moderateContent(message, env) {
       return { level };
     }
 
-    // Default to level 1 if parsing fails
-    console.warn('Invalid moderation result:', result);
-    return { level: 1 };
+    // If parsing fails, reject the post
+    console.error('Invalid moderation result:', result);
+    throw new Error('AI moderation returned invalid result');
   } catch (error) {
     console.error('Moderation error:', error);
-    // Default to level 1 if moderation fails
-    return { level: 1 };
+    // Reject post if moderation fails
+    throw error;
   }
 }
