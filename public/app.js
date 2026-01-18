@@ -1,5 +1,5 @@
 // Configuration
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'https://simple-bbs.y-miki.workers.dev/api';
 
 // DOM elements
 const commentForm = document.getElementById('commentForm');

@@ -19,7 +19,7 @@ id = "f108da9daca34c1ca3467eb0d978e433"
 
 # Cron Triggers
 [triggers]
-crons = ["0 0 * * 0"]
+crons = ["0 0 * * SUN"]
 
 # Environment variables
 [vars]
