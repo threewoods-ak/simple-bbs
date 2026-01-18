@@ -1,5 +1,7 @@
 export async function moderateContent(message, env) {
   try {
+    // Get model name from environment variable or use default
+    const modelName = env.GEMINI_MODEL || 'gemini-2.5-flash';
     // Read moderation rules
     const rulesTemplate = `# Gemini 回答生成ルール
 
@@ -42,24 +44,28 @@ export async function moderateContent(message, env) {
 
     // Call Gemini API
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt,
+                },
+              ],
+            },
+          ],
           generationConfig: {
             temperature: 0,
             maxOutputTokens: 10,
-          }
+          },
         }),
-      }
+      },
     );
 
     if (!response.ok) {

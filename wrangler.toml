@@ -24,3 +24,4 @@ crons = ["0 0 * * SUN"]
 # Environment variables
 [vars]
 GEMINI_API_KEY = ""
+GEMINI_MODEL = "gemini-2.5-flash"
