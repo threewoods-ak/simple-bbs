@@ -1,0 +1,18 @@
+{
+  "name": "simple-bbs",
+  "version": "1.0.0",
+  "description": "Anonymous BBS built with Cloudflare Workers + D1 + KV + Pages",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "pages:dev": "wrangler pages dev public",
+    "pages:deploy": "wrangler pages deploy public"
+  },
+  "keywords": ["cloudflare", "workers", "bbs"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

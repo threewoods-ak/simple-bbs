@@ -1,0 +1,26 @@
+name = "simple-bbs"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "simple-bbs-db"
+database_id = "your-database-id"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "your-cache-kv-id"
+
+[[kv_namespaces]]
+binding = "LIMIT_KV"
+id = "your-limit-kv-id"
+
+# Cron Triggers
+[triggers]
+crons = ["0 0 * * 0"]
+
+# Environment variables
+[vars]
+GEMINI_API_KEY = ""
